@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Konszolidáció — Interaktív segédanyag</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#eef3f1;
+  --card:#f9fbfa;
+  --grid:rgba(13,90,80,0.055);
+  --line:#d3dedb;
+  --ink:#0d272b;
+  --ink2:#34514f;
+  --ink3:#64807d;
+  --accent:#0e7c6b;      /* petrol — fő hangsúly */
+  --accent-soft:#dcefe9;
+  --water:#1b6fae;       /* víz */
+  --water-soft:#ddeaf6;
+  --pore:#c2521f;        /* többlet-pórusvíznyomás */
+  --pore-soft:#f7e2d5;
+  --eff:#7a5230;         /* hatékony feszültség */
+  --eff-soft:#efe4d7;
+  --danger:#a32626;
+  --ok:#2e7d4f;
+  --display:'Archivo',system-ui,sans-serif;
+  --body:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--body);
+  background:var(--paper);
+  color:var(--ink);
+  font-size:16px;
+  line-height:1.7;
+}
+/* milliméterpapír háttér */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px;
+}
+main{position:relative;z-index:1}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:300;height:54px;
+  background:rgba(238,243,241,0.94);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 1.4rem;gap:1.6rem;
+}
+.nav-logo{font-family:var(--display);font-weight:800;font-size:14px;letter-spacing:.06em;color:var(--accent);white-space:nowrap;text-transform:uppercase}
+.nav-links{display:flex;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-link{
+  padding:0 12px;height:54px;display:flex;align-items:center;
+  font-size:13.5px;font-weight:500;color:var(--ink3);text-decoration:none;
+  border-bottom:2px solid transparent;white-space:nowrap;transition:color .2s,border-color .2s;
+}
+.nav-link:hover{color:var(--ink)}
+.nav-link.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* ── HERO ── */
+header.hero{
+  position:relative;z-index:1;
+  max-width:980px;margin:0 auto;padding:4.5rem 1.5rem 3rem;
+}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:1rem;
+}
+.hero h1{
+  font-family:var(--display);font-weight:900;letter-spacing:-0.015em;
+  font-size:clamp(2.6rem,7vw,4.6rem);line-height:1.02;color:var(--ink);
+  text-transform:uppercase;
+}
+.hero h1 .thin{font-weight:600;color:var(--ink3)}
+.hero-sub{max-width:620px;margin-top:1.3rem;font-size:1.06rem;color:var(--ink2)}
+.hero-gauge{
+  margin-top:2.2rem;max-width:620px;border:1px solid var(--line);background:var(--card);
+  border-radius:10px;padding:1rem 1.2rem;
+}
+.hero-gauge .gauge-label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--ink3);margin-bottom:.45rem}
+.gauge-bar{height:16px;border-radius:8px;overflow:hidden;display:flex;border:1px solid var(--line)}
+.gauge-u{background:linear-gradient(90deg,#d96a31,var(--pore));transition:width .25s linear}
+.gauge-eff{background:linear-gradient(90deg,#8a6240,var(--eff));flex:1;transition:width .25s linear}
+.gauge-caption{font-size:12.5px;color:var(--ink3);margin-top:.5rem}
+
+/* ── SZAKASZOK ── */
+section{max-width:980px;margin:0 auto;padding:3.2rem 1.5rem 1rem}
+.eyebrow{
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);display:flex;align-items:center;gap:.7rem;margin-bottom:.7rem;
+}
+.eyebrow::after{content:'';height:1px;flex:1;background:var(--line)}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,3.4vw,2.1rem);letter-spacing:-.01em;margin-bottom:1rem}
+h3{font-family:var(--display);font-weight:700;font-size:1.12rem;margin:1.6rem 0 .5rem}
+p{margin-bottom:1rem;color:var(--ink2)}
+p strong{color:var(--ink)}
+.lead{font-size:1.05rem}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin:1.4rem 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.2rem}
+.card h4{font-family:var(--display);font-weight:700;font-size:.98rem;margin-bottom:.4rem;display:flex;align-items:center;gap:.5rem}
+.card p{font-size:.92rem;margin:0;color:var(--ink2)}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.dot.water{background:var(--water)} .dot.pore{background:var(--pore)} .dot.eff{background:var(--eff)} .dot.accent{background:var(--accent)}
+
+.formula{
+  font-family:var(--mono);background:var(--card);border:1px solid var(--line);
+  border-left:3px solid var(--accent);border-radius:8px;
+  padding:.9rem 1.2rem;margin:1.2rem 0;font-size:.98rem;overflow-x:auto;white-space:nowrap;
+}
+.formula small{display:block;font-family:var(--body);color:var(--ink3);font-size:.82rem;white-space:normal;margin-top:.4rem}
+.f-pore{color:var(--pore);font-weight:600}
+.f-eff{color:var(--eff);font-weight:600}
+.f-water{color:var(--water);font-weight:600}
+.f-acc{color:var(--accent);font-weight:600}
+
+.note{
+  background:var(--accent-soft);border:1px solid #bcdcd2;border-radius:10px;
+  padding:.9rem 1.2rem;margin:1.2rem 0;font-size:.95rem;color:var(--ink2);
+}
+.note strong{color:var(--accent)}
+.note.warn{background:var(--pore-soft);border-color:#e7c4ab}
+.note.warn strong{color:var(--pore)}
+
+/* ── INTERAKTÍV PANEL ── */
+.panel{
+  background:var(--card);border:1px solid var(--line);border-radius:14px;
+  padding:1.4rem;margin:1.6rem 0;box-shadow:0 2px 14px rgba(13,39,43,0.05);
+}
+.panel-title{font-family:var(--display);font-weight:700;font-size:1.02rem;margin-bottom:.2rem}
+.panel-sub{font-size:.88rem;color:var(--ink3);margin-bottom:1rem}
+.controls{display:flex;flex-wrap:wrap;gap:1rem 1.6rem;align-items:flex-end;margin-bottom:1rem}
+.ctrl{display:flex;flex-direction:column;gap:.3rem;min-width:160px;flex:1}
+.ctrl label{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.ctrl .val{font-family:var(--mono);font-size:13px;color:var(--ink);font-weight:600}
+input[type=range]{width:100%;accent-color:var(--accent);height:26px}
+select,input[type=number]{
+  font-family:var(--mono);font-size:14px;padding:.45rem .6rem;border:1px solid var(--line);
+  border-radius:8px;background:#fff;color:var(--ink);width:100%;
+}
+.btn{
+  font-family:var(--display);font-weight:700;font-size:.92rem;letter-spacing:.02em;
+  padding:.55rem 1.2rem;border-radius:8px;border:1px solid var(--accent);
+  background:var(--accent);color:#fff;cursor:pointer;transition:transform .1s,opacity .2s;
+}
+.btn:hover{opacity:.92}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--water);outline-offset:2px}
+.btn-row{display:flex;gap:.6rem;flex-wrap:wrap}
+
+.svg-wrap{background:#fff;border:1px solid var(--line);border-radius:10px;padding:.6rem;overflow:hidden}
+.svg-wrap svg{display:block;width:100%;height:auto}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;align-items:start}
+@media(max-width:760px){.split{grid-template-columns:1fr}}
+
+.readouts{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+.chip{
+  font-family:var(--mono);font-size:12.5px;border:1px solid var(--line);border-radius:8px;
+  background:#fff;padding:.45rem .7rem;color:var(--ink2);
+}
+.chip b{color:var(--ink);font-weight:600}
+.chip.pore b{color:var(--pore)} .chip.eff b{color:var(--eff)} .chip.acc b{color:var(--accent)} .chip.water b{color:var(--water)}
+
+/* táblázat */
+table{width:100%;border-collapse:collapse;margin:1.2rem 0;font-size:.93rem;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th,td{padding:.55rem .9rem;border-bottom:1px solid var(--line);text-align:center;font-family:var(--mono);font-size:.88rem}
+th{background:var(--accent-soft);color:var(--ink);font-family:var(--display);font-weight:700;font-size:.85rem;letter-spacing:.03em}
+tr:last-child td{border-bottom:none}
+
+/* ── KVÍZ ── */
+.quiz-box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.6rem;margin:1.6rem 0}
+.quiz-progress{font-family:var(--mono);font-size:12.5px;color:var(--ink3);margin-bottom:.8rem;display:flex;justify-content:space-between}
+.quiz-q{font-family:var(--display);font-weight:700;font-size:1.12rem;margin-bottom:1.1rem}
+.quiz-opts{display:grid;gap:.6rem}
+.quiz-opt{
+  text-align:left;font-family:var(--body);font-size:.96rem;padding:.75rem 1rem;
+  border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;color:var(--ink2);
+  transition:border-color .15s,background .15s;
+}
+.quiz-opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+.quiz-opt:disabled{cursor:default}
+.quiz-opt.correct{border-color:var(--ok);background:#e2f1e8;color:var(--ink);font-weight:600}
+.quiz-opt.wrong{border-color:var(--danger);background:#f7e3e3;color:var(--ink)}
+.quiz-expl{margin-top:1rem;padding:.9rem 1.1rem;border-radius:10px;background:var(--water-soft);border:1px solid #bcd4ea;font-size:.93rem;color:var(--ink2);display:none}
+.quiz-expl.show{display:block}
+.quiz-expl b{color:var(--water)}
+.quiz-next{margin-top:1.1rem;display:none}
+.quiz-next.show{display:inline-block}
+.quiz-result{text-align:center;display:none}
+.quiz-result.show{display:block}
+.quiz-score{font-family:var(--display);font-weight:900;font-size:3.4rem;color:var(--accent);line-height:1.1}
+.quiz-msg{font-size:1.02rem;color:var(--ink2);margin:.6rem 0 1.4rem}
+.progress-track{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-bottom:1.2rem}
+.progress-fill{height:100%;background:var(--accent);width:0;transition:width .3s}
+
+footer{
+  max-width:980px;margin:3rem auto 0;padding:2rem 1.5rem 3rem;
+  border-top:1px solid var(--line);font-size:.85rem;color:var(--ink3);
+  font-family:var(--mono);
+}
+
+/* megjelenés görgetésre */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* csepp animáció a szelepnél */
+@keyframes dropFall{
+  0%{transform:translateY(0);opacity:0}
+  15%{opacity:1}
+  100%{transform:translateY(34px);opacity:0}
+}
+.playing .drop{animation:dropFall 1s linear infinite}
+.playing .drop.d2{animation-delay:.33s}
+.playing .drop.d3{animation-delay:.66s}
+.drop{opacity:0}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .playing .drop{animation:none;opacity:.6}
+}
+@media(max-width:600px){
+  section{padding:2.4rem 1.1rem .6rem}
+  header.hero{padding:3rem 1.1rem 2rem}
+  nav{padding:0 .9rem;gap:.9rem}
+}
+</style>
+</head>
+<body>
+<nav>
+  <span class="nav-logo">Konszolidáció</span>
+  <div class="nav-links">
+    <a class="nav-link" href="#alapok">Alapfogalmak</a>
+    <a class="nav-link" href="#modell">Rugó–dugattyú</a>
+    <a class="nav-link" href="#izokron">Izokrónok</a>
+    <a class="nav-link" href="#odometer">Ödométer</a>
+    <a class="nav-link" href="#kalkulator">Kalkulátor</a>
+    <a class="nav-link" href="#kuszas">Kúszás</a>
+    <a class="nav-link" href="#gyorsitas">Gyorsítás</a>
+    <a class="nav-link" href="#kviz">Kvíz</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-eyebrow">Talajmechanika · Interaktív segédanyag</div>
+  <h1>Konszolidáció<br><span class="thin">— amikor a talaj időt kér</span></h1>
+  <p class="hero-sub">Telített, kötött talajra terhet helyezünk — az épület mégsem azonnal süllyed, hanem <strong>éveken át</strong>. Hová tűnik közben a víz, és hogyan adódik át a teher a talajvázra? Ez az anyag lépésről lépésre, működő modelleken keresztül mutatja meg.</p>
+  <div class="hero-gauge" aria-hidden="true">
+    <div class="gauge-label"><span>Δu — többlet-pórusvíznyomás</span><span>Δσ' — hatékony feszültség</span></div>
+    <div class="gauge-bar"><div class="gauge-u" id="heroU" style="width:88%"></div><div class="gauge-eff"></div></div>
+    <div class="gauge-caption">A konszolidáció lényege egyetlen mozdulat: a teher a <b style="color:var(--pore)">pórusvízről</b> lassan a <b style="color:var(--eff)">talajvázra</b> adódik át. Figyeld a sávot — épp most is zajlik.</div>
+  </div>
+</header>
+
+<main>
+
+<!-- ── 1. ALAPFOGALMAK ── -->
+<section id="alapok" class="reveal">
+  <div class="eyebrow">1 · Alapfogalmak</div>
+  <h2>Mi a konszolidáció?</h2>
+  <p class="lead">A <strong>konszolidáció</strong> a telített talaj <strong>időben elhúzódó összenyomódása</strong>: a terhelés hatására a pórusokból fokozatosan kiszorul a víz, a talajváz pedig tömörödik. Az időbeli elhúzódás oka, hogy a víz csak lassan tud kiáramlani a kis áteresztőképességű (agyag, iszap) talajból.</p>
+  <div class="cards">
+    <div class="card"><h4><span class="dot water"></span>Telített talaj</h4><p>A pórusokat teljesen víz tölti ki. A víz és a szemcsék gyakorlatilag összenyomhatatlanok — összenyomódás csak akkor lehetséges, ha a víz <em>el tud távozni</em>.</p></div>
+    <div class="card"><h4><span class="dot pore"></span>Többlet-pórusvíznyomás (Δu)</h4><p>A hirtelen terhelést kezdetben teljes egészében a pórusvíz veszi fel: Δu = Δσ. Ez a „többletnyomás” hajtja ki a vizet a rétegből.</p></div>
+    <div class="card"><h4><span class="dot eff"></span>Hatékony feszültség (σ')</h4><p>A szemcsevázon átadódó feszültség. <strong>Csak ez okoz összenyomódást és nyírószilárdság-növekedést</strong> — a víznyomás nem.</p></div>
+  </div>
+  <div class="formula">σ = <span class="f-eff">σ'</span> + <span class="f-pore">u</span>
+    <small><strong>Terzaghi-féle hatékony feszültségek elve:</strong> a teljes feszültség a hatékony feszültség és a pórusvíznyomás összege. A konszolidáció során σ állandó, miközben <span class="f-pore">u csökken</span> és <span class="f-eff">σ' nő</span>.</small>
+  </div>
+  <h3>Miért a kötött talaj a főszereplő?</h3>
+  <p>Homokban, kavicsban a víz nagy áteresztőképesség mellett szinte azonnal eltávozik — a süllyedés a terheléssel <strong>gyakorlatilag egyidejű</strong>. Agyagban az áteresztőképesség akár milliárdod része a kavicsénak, így ugyanez a folyamat <strong>hónapokig, évekig, évtizedekig</strong> tarthat. A mexikóvárosi katedrális vagy a pisai ferde torony máig tartó mozgása ennek a folyamatnak a látványos következménye.</p>
+  <div class="note"><strong>Jegyezd meg:</strong> a konszolidáció nem „a talaj összenyomódása” általában, hanem kifejezetten a <strong>pórusvíz kiáramlásához kötött, időfüggő</strong> összenyomódás.</div>
+</section>
+
+<!-- ── 2. RUGÓ-DUGATTYÚ ── -->
+<section id="modell" class="reveal">
+  <div class="eyebrow">2 · A folyamat modellje</div>
+  <h2>Rugó–dugattyú analógia</h2>
+  <p class="lead">Terzaghi klasszikus modellje: egy vízzel telt henger, benne <strong>rugó</strong> (= talajváz) és egy <strong>kis nyílású szelep</strong> (= a talaj áteresztőképessége). A dugattyúra helyezett teher eleinte a vizet nyomja — ahogy a víz a szelepen át távozik, a rugó fokozatosan átveszi a terhet.</p>
+  <div class="panel">
+    <div class="panel-title">Működő modell — indítsd el, és figyeld a tehermegoszlást</div>
+    <div class="panel-sub">A terhelés a teljes Δσ feszültséget adja; a szelep mérete a talaj áteresztőképességét (k, illetve c<sub>v</sub>) jelképezi.</div>
+    <div class="controls">
+      <div class="ctrl"><label>Terhelés Δσ <span class="val" id="loadVal">100 kPa</span></label><input type="range" id="loadSlider" min="50" max="200" step="10" value="100"></div>
+      <div class="ctrl"><label>Szelep (áteresztőképesség)</label><select id="valveSel"><option value="0.5">Szűk — agyag</option><option value="1" selected>Közepes — iszap</option><option value="2.5">Tág — homokos iszap</option></select></div>
+      <div class="ctrl btn-row" style="min-width:auto;flex:none"><button class="btn" id="pistonPlay">▶ Indítás</button><button class="btn ghost" id="pistonReset">↺ Alaphelyzet</button></div>
+    </div>
+    <div class="split">
+      <div class="svg-wrap"><svg id="pistonSvg" viewBox="0 0 340 360" role="img" aria-label="Rugó-dugattyú konszolidációs modell"></svg></div>
+      <div>
+        <div class="svg-wrap"><svg id="pistonBars" viewBox="0 0 340 200" role="img" aria-label="Tehermegoszlás a víz és a rugó között"></svg></div>
+        <div class="readouts">
+          <div class="chip acc">Konszolidációs fok <b id="roU">U = 0%</b></div>
+          <div class="chip pore">Pórusvíz <b id="roPore">Δu = 100 kPa</b></div>
+          <div class="chip eff">Rugó (talajváz) <b id="roEff">Δσ' = 0 kPa</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note"><strong>A tanulság:</strong> a süllyedés sebességét nem a teher nagysága, hanem a <strong>víz távozásának sebessége</strong> szabja meg. Nagyobb teher nagyobb végsüllyedést ad — de a folyamat ritmusát a szelep (az áteresztőképesség) diktálja.</div>
+</section>
+
+<!-- ── 3. IZOKRÓNOK ── -->
+<section id="izokron" class="reveal">
+  <div class="eyebrow">3 · Terzaghi egydimenziós elmélete</div>
+  <h2>Izokrónok — pillanatfelvételek a rétegből</h2>
+  <p class="lead">Az <strong>izokrón</strong> a többlet-pórusvíznyomás eloszlása a mélység mentén <strong>egy adott időpillanatban</strong>. A drénezett határ közelében a víznyomás gyorsan leépül, a réteg belsejében sokáig megmarad — az izokrónok ezt a „leeresztési hullámot” rajzolják ki.</p>
+  <div class="formula">T<sub>v</sub> = <span class="f-acc">c<sub>v</sub></span> · t / H<sub>dr</sub>²
+    <small><strong>Időtényező:</strong> c<sub>v</sub> a konszolidációs együttható [m²/év], H<sub>dr</sub> a <strong>drénút</strong> — a leghosszabb út, amit a víznek meg kell tennie a drénezett határig. Kétoldali drénezésnél H<sub>dr</sub> = H/2!</small>
+  </div>
+  <div class="panel">
+    <div class="panel-title">Izokrón-laboratórium</div>
+    <div class="panel-sub">Húzd az idő-csúszkát, és váltogasd a drénezést — figyeld, mennyivel gyorsabb a kétoldali eset.</div>
+    <div class="controls">
+      <div class="ctrl"><label>Időtényező <span class="val" id="tvVal">T<sub>v</sub> = 0.05</span></label><input type="range" id="tvSlider" min="0" max="100" value="20"></div>
+      <div class="ctrl"><label>Drénezés</label><select id="drainSel"><option value="2" selected>Kétoldali (felül homok, alul homok)</option><option value="1">Egyoldali (alul vízzáró)</option></select></div>
+    </div>
+    <div class="split">
+      <div class="svg-wrap"><svg id="isoSvg" viewBox="0 0 380 340" role="img" aria-label="Izokrónok a rétegben"></svg></div>
+      <div>
+        <div class="svg-wrap"><svg id="isoCol" viewBox="0 0 200 340" role="img" aria-label="Pórusvíznyomás-eloszlás színskálán"></svg></div>
+        <div class="readouts"><div class="chip acc">Átlagos konszolidációs fok <b id="isoU">U = 0%</b></div></div>
+      </div>
+    </div>
+  </div>
+  <h3>Az U–T<sub>v</sub> kapcsolat sarokszámai</h3>
+  <table>
+    <thead><tr><th>U (átlagos konszolidációs fok)</th><th>25%</th><th>50%</th><th>70%</th><th>90%</th><th>95%</th></tr></thead>
+    <tbody><tr><td><b>T<sub>v</sub></b></td><td>0,049</td><td><b>0,197</b></td><td>0,403</td><td><b>0,848</b></td><td>1,129</td></tr></tbody>
+  </table>
+  <div class="note warn"><strong>Vizsgakedvenc:</strong> mivel t ~ H<sub>dr</sub>², ha a drénút a <strong>felére</strong> csökken (pl. kétoldali drénezés), a konszolidáció ideje a <strong>negyedére</strong> esik. Ez a szalagdrének működésének kulcsa is.</div>
+</section>
+
+<!-- ── 4. ÖDOMÉTER ── -->
+<section id="odometer" class="reveal">
+  <div class="eyebrow">4 · Laboratóriumi vizsgálat</div>
+  <h2>Ödométer és az e–log σ' diagram</h2>
+  <p class="lead">A konszolidációs paramétereket az <strong>ödométeres (kompressziós) vizsgálatból</strong> nyerjük: a vékony, telített mintát merev gyűrű fogja körül (<strong>oldalirányú alakváltozás gátolt</strong>), alul-felül porózus kő dréni a vizet, a terhelést lépcsőkben növeljük. Az eredmény a hajlított „hokiütő” alakú <strong>e–log σ' görbe</strong>.</p>
+  <div class="cards">
+    <div class="card"><h4><span class="dot accent"></span>C<sub>c</sub> — kompressziós index</h4><p>A normálkonszolidált (szűz) ág meredeksége. Minél nagyobb, annál összenyomhatóbb a talaj.</p></div>
+    <div class="card"><h4><span class="dot accent"></span>C<sub>s</sub> — duzzadási index</h4><p>A tehermentesítési–újraterhelési ág meredeksége; jellemzően C<sub>c</sub> 1/5–1/10-e.</p></div>
+    <div class="card"><h4><span class="dot accent"></span>σ'<sub>p</sub> — előterhelési feszültség</h4><p>A legnagyobb hatékony feszültség, amit a talaj valaha „megélt”. Ez választja el a merev és a lágy viselkedést.</p></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title">e–log σ' játszótér</div>
+    <div class="panel-sub">Told a jelenlegi feszültséget σ'<sub>p</sub> alá és fölé — figyeld, mikor lép a pont a meredek szűz ágra, és hogyan változik az OCR.</div>
+    <div class="controls">
+      <div class="ctrl"><label>Jelenlegi σ'<sub>v</sub> <span class="val" id="sigVal">100 kPa</span></label><input type="range" id="sigSlider" min="20" max="800" step="5" value="100"></div>
+      <div class="ctrl"><label>Előterhelési σ'<sub>p</sub> <span class="val" id="spVal">200 kPa</span></label><input type="range" id="spSlider" min="50" max="500" step="10" value="200"></div>
+      <div class="ctrl"><label>C<sub>c</sub> <span class="val" id="ccVal">0.30</span></label><input type="range" id="ccSlider" min="0.10" max="0.60" step="0.02" value="0.30"></div>
+    </div>
+    <div class="split">
+      <div class="svg-wrap"><svg id="elogSvg" viewBox="0 0 420 330" role="img" aria-label="e–log szigma diagram"></svg></div>
+      <div>
+        <div class="readouts" style="margin-top:0">
+          <div class="chip acc">OCR = σ'<sub>p</sub>/σ'<sub>v</sub> <b id="ocrVal">2.00</b></div>
+          <div class="chip"><b id="ocrState">Túlkonszolidált (OC) — merev ág</b></div>
+          <div class="chip">Hézagtényező <b id="eVal">e = 0.85</b></div>
+        </div>
+        <p style="font-size:.92rem;margin-top:1rem">Amíg σ'<sub>v</sub> &lt; σ'<sub>p</sub> (<strong>OCR &gt; 1, túlkonszolidált</strong>), a talaj a lapos újraterhelési ágon mozog: kicsi az összenyomódás. Amint a feszültség átlépi σ'<sub>p</sub>-t (<strong>OCR = 1, normálisan konszolidált</strong>), a pont a meredek szűz ágra vált — innen minden teher-növekmény nagy süllyedést okoz. <strong>Ezért kritikus tervezéskor tudni, hol van σ'<sub>p</sub>.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 5. KALKULÁTOR ── -->
+<section id="kalkulator" class="reveal">
+  <div class="eyebrow">5 · Méretezés</div>
+  <h2>Süllyedés–idő kalkulátor</h2>
+  <p class="lead">Tegyük össze a tanultakat: adott agyagrétegre, terhelésre és drénezésre számítsuk ki a <strong>végsüllyedést</strong> és az <strong>időbeli lefolyást</strong>. A végsüllyedés az összenyomódási modulusból, az idő a c<sub>v</sub>-ből és a drénútból adódik.</p>
+  <div class="formula">s<sub>∞</sub> = Δσ · H / E<sub>oed</sub> &nbsp;&nbsp;·&nbsp;&nbsp; t = T<sub>v</sub> · H<sub>dr</sub>² / <span class="f-acc">c<sub>v</sub></span>
+    <small>E<sub>oed</sub> az ödométeres (összenyomódási) modulus; H a réteg teljes vastagsága; H<sub>dr</sub> a drénút.</small>
+  </div>
+  <div class="panel">
+    <div class="panel-title">Számítás élő görbével</div>
+    <div class="panel-sub">Tipikus értékek puha agyagra: c<sub>v</sub> = 1–5 m²/év, E<sub>oed</sub> = 2–8 MPa.</div>
+    <div class="controls">
+      <div class="ctrl"><label>Rétegvastagság H [m]</label><input type="number" id="cH" value="6" min="1" max="30" step="0.5"></div>
+      <div class="ctrl"><label>Drénezés</label><select id="cDrain"><option value="2" selected>Kétoldali</option><option value="1">Egyoldali</option></select></div>
+      <div class="ctrl"><label>c<sub>v</sub> [m²/év]</label><input type="number" id="cCv" value="2" min="0.1" max="50" step="0.1"></div>
+      <div class="ctrl"><label>Δσ [kPa]</label><input type="number" id="cDs" value="80" min="10" max="400" step="5"></div>
+      <div class="ctrl"><label>E<sub>oed</sub> [MPa]</label><input type="number" id="cE" value="4" min="0.5" max="50" step="0.5"></div>
+    </div>
+    <div class="svg-wrap"><svg id="stSvg" viewBox="0 0 640 320" role="img" aria-label="Süllyedés-idő görbe"></svg></div>
+    <div class="readouts">
+      <div class="chip acc">Végsüllyedés <b id="cS">s∞ = 12.0 cm</b></div>
+      <div class="chip water">50%-os konszolidáció <b id="cT50">t₅₀ = 0.9 év</b></div>
+      <div class="chip water">90%-os konszolidáció <b id="cT90">t₉₀ = 3.8 év</b></div>
+    </div>
+  </div>
+  <div class="note"><strong>Próbáld ki:</strong> váltsd a drénezést kétoldaliról egyoldalira ugyanazokkal az adatokkal — a t₉₀ pontosan négyszeresére nő. Aztán duplázd meg H-t: az idő ismét négyszereződik, a süllyedés pedig duplázódik.</div>
+</section>
+
+<!-- ── 6. KÚSZÁS ── -->
+<section id="kuszas" class="reveal">
+  <div class="eyebrow">6 · A történet nem ér véget</div>
+  <h2>Másodlagos konszolidáció — a kúszás</h2>
+  <p class="lead">Amikor a többlet-pórusvíznyomás már teljesen leépült (U ≈ 100%), a süllyedés <strong>nem áll meg</strong>: a szemcseváz <strong>állandó hatékony feszültség mellett</strong> is lassan tovább rendeződik. Ez a <strong>másodlagos konszolidáció (kúszás)</strong>, amelyet a C<sub>α</sub> másodlagos kompressziós index ír le — log-idő léptékben közel egyenes.</p>
+  <div class="split">
+    <div class="svg-wrap"><svg id="creepSvg" viewBox="0 0 420 280" role="img" aria-label="Elsődleges és másodlagos konszolidáció a log-idő diagramon"></svg></div>
+    <div>
+      <p>A log-idő ábrán a két szakasz jól szétválik: az <strong style="color:var(--pore)">elsődleges</strong> szakaszt a víz kiáramlása vezérli (S-alakú), a <strong style="color:var(--eff)">másodlagos</strong> szakasz közel egyenes, meredeksége C<sub>α</sub>.</p>
+      <p><strong>Mikor számít?</strong> Szerves talajoknál (tőzeg, szerves iszap) a kúszás akár a teljes süllyedés <strong>felét</strong> is adhatja, és évtizedekig tart — útépítésben, töltésalapozásban ez méretezést meghatározó kérdés. Szervetlen, túlkonszolidált agyagnál többnyire elhanyagolható.</p>
+      <div class="note" style="margin-top:.4rem"><strong>Ökölszabály:</strong> C<sub>α</sub>/C<sub>c</sub> ≈ 0,03–0,05 szervetlen agyagra, 0,05–0,07 szerves talajra.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 7. GYORSÍTÁS ── -->
+<section id="gyorsitas" class="reveal">
+  <div class="eyebrow">7 · Mérnöki válaszok</div>
+  <h2>Hogyan gyorsítható a konszolidáció?</h2>
+  <p class="lead">Ha az építési ütem nem várhat éveket, a mérnök két csavart tud meghúzni: <strong>rövidíti a drénutat</strong>, vagy <strong>előre „lefuttatja”</strong> a folyamatot.</p>
+  <div class="split">
+    <div class="svg-wrap"><svg id="drainSvg" viewBox="0 0 420 300" role="img" aria-label="Szalagdrének működése"></svg></div>
+    <div>
+      <h3 style="margin-top:.2rem">Szalagdrének (vertikális drének)</h3>
+      <p>Sűrű hálóban (1–2 m) lesajtolt, geotextíliába burkolt műanyag szalagok, amelyeken a víz <strong>vízszintesen, rövid úton</strong> jut el a drénig. Mivel t ~ H<sub>dr</sub>², a drénút méteres nagyságrendre csökkentése a konszolidációs időt <strong>évekről hónapokra</strong> rövidíti.</p>
+      <h3>Előterhelés (túltöltés)</h3>
+      <p>A végleges tehernél <strong>nagyobb</strong> ideiglenes töltést építünk: a talaj a szükséges süllyedés nagy részét előre „letudja”, majd a túltöltés elbontása után a talaj túlkonszolidálttá válik — a végleges szerkezet már a merev, lapos ágon dolgozik. A két módszer <strong>kombinálva</strong> a leghatékonyabb.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── 8. KVÍZ ── -->
+<section id="kviz" class="reveal">
+  <div class="eyebrow">8 · Tudáspróba</div>
+  <h2>Kvíz — 15 kérdés</h2>
+  <p class="lead">A kérdések sorrendje minden indításnál más. Minden válasz után rövid magyarázatot kapsz.</p>
+  <div class="quiz-box">
+    <div id="quizMain">
+      <div class="progress-track"><div class="progress-fill" id="qProg"></div></div>
+      <div class="quiz-progress"><span id="qCount">1 / 15</span><span id="qScoreLive">Pont: 0</span></div>
+      <div class="quiz-q" id="qText"></div>
+      <div class="quiz-opts" id="qOpts"></div>
+      <div class="quiz-expl" id="qExpl"></div>
+      <button class="btn quiz-next" id="qNext">Következő →</button>
+    </div>
+    <div class="quiz-result" id="quizResult">
+      <div class="quiz-score" id="qFinal">0 / 15</div>
+      <div class="quiz-msg" id="qMsg"></div>
+      <button class="btn" id="qRestart">↺ Újrakezdés</button>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>
+  Konszolidáció — interaktív tananyag · Talajmechanika · Készült oktatási célra · A számítások szemléltető jellegűek, tervezésre az MSZ EN 1997 (EC7) szerinti eljárás irányadó.
+</footer>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const SVGNS="http://www.w3.org/2000/svg";
+const reduced=(typeof window.matchMedia==='function')?window.matchMedia('(prefers-reduced-motion: reduce)').matches:false;
+
+/* ── Terzaghi-sorok ── */
+function Uavg(Tv){let s=0;for(let m=0;m<60;m++){const M=Math.PI*(2*m+1)/2;s+=2/(M*M)*Math.exp(-M*M*Tv);}return Math.min(1,Math.max(0,1-s));}
+function uRatio(Z,Tv){ // Z = z/Hdr (0..2), u/u0
+  let s=0;for(let m=0;m<60;m++){const M=Math.PI*(2*m+1)/2;s+=(2/M)*Math.sin(M*Z)*Math.exp(-M*M*Tv);}
+  return Math.min(1,Math.max(0,s));
+}
+function TvFromU(U){ // inverz, mintavételezéssel
+  if(U<=0)return 0;
+  let lo=0,hi=3;
+  for(let i=0;i<40;i++){const mid=(lo+hi)/2;(Uavg(mid)<U)?lo=mid:hi=mid;}
+  return (lo+hi)/2;
+}
+function fmtTime(years){
+  if(years<0.02){return Math.round(years*365)+" nap";}
+  if(years<1){return (years*12).toFixed(1).replace('.',',')+" hónap";}
+  return years.toFixed(years<10?1:0).replace('.',',')+" év";
+}
+
+/* ── Hero gauge: lassú, ciklikus disszipáció ── */
+(function(){
+  const bar=$("heroU");if(!bar)return;
+  if(reduced){bar.style.width="35%";return;}
+  let Tv=0;
+  setInterval(()=>{Tv+=0.012;if(Tv>1.6)Tv=0;
+    bar.style.width=(100*(1-Uavg(Tv))).toFixed(1)+"%";},120);
+})();
+
+/* ── Nav + reveal ── */
+(function(){
+  const links=[...document.querySelectorAll('.nav-link')];
+  const secs=links.map(l=>document.querySelector(l.getAttribute('href'))).filter(Boolean);
+  if(typeof IntersectionObserver==='undefined'){
+    document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));return;
+  }
+  const io=new IntersectionObserver(es=>{es.forEach(e=>{
+    if(e.isIntersecting){links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+e.target.id));}
+  });},{rootMargin:'-30% 0px -60% 0px'});
+  secs.forEach(s=>io.observe(s));
+  const rio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');rio.unobserve(e.target);}});},{threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(el=>rio.observe(el));
+})();
+
+/* ════ 2. RUGÓ–DUGATTYÚ ════ */
+(function(){
+  const svg=$("pistonSvg"),bars=$("pistonBars");if(!svg)return;
+  let Tv=0,playing=false,raf=null,last=0;
+  const cyl={x:90,w:160,top:60,bot:320};
+  const sMax=70; // dugattyú max elmozdulás px
+
+  function springPath(x,y1,y2,coils,w){
+    const n=coils*2,seg=(y2-y1)/n;let d="M "+x+" "+y1;
+    for(let i=1;i<=n;i++){const dir=(i%2?1:-1);d+=" L "+(x+dir*w)+" "+(y1+seg*(i-0.5));}
+    d+=" L "+x+" "+y2;return d;
+  }
+  function draw(){
+    const U=Uavg(Tv),ds=+$("loadSlider").value;
+    const u=ds*(1-U),eff=ds*U;
+    const pistY=cyl.top+30+sMax*U;
+    const wTop=pistY+12, wBot=cyl.bot-8;
+    svg.innerHTML=
+      // teher
+      '<g><rect x="'+(cyl.x+25)+'" y="'+(pistY-46)+'" width="'+(cyl.w-50)+'" height="30" rx="4" fill="#34514f"/>'+
+      '<text x="'+(cyl.x+cyl.w/2)+'" y="'+(pistY-26)+'" text-anchor="middle" fill="#fff" font-family="JetBrains Mono" font-size="13" font-weight="600">Δσ = '+ds+' kPa</text>'+
+      '<path d="M '+(cyl.x+cyl.w/2)+' '+(pistY-16)+' l -6 -8 h 12 z" fill="#34514f"/></g>'+
+      // henger fala
+      '<rect x="'+(cyl.x-8)+'" y="'+cyl.top+'" width="8" height="'+(cyl.bot-cyl.top)+'" fill="#9fb3ae"/>'+
+      '<rect x="'+(cyl.x+cyl.w)+'" y="'+cyl.top+'" width="8" height="'+(cyl.bot-cyl.top)+'" fill="#9fb3ae"/>'+
+      '<rect x="'+(cyl.x-8)+'" y="'+cyl.bot+'" width="'+(cyl.w+16)+'" height="8" fill="#9fb3ae"/>'+
+      // víz
+      '<rect x="'+cyl.x+'" y="'+wTop+'" width="'+cyl.w+'" height="'+(wBot-wTop)+'" fill="#cfe3f4"/>'+
+      // rugó
+      '<path d="'+springPath(cyl.x+cyl.w/2,pistY+12,cyl.bot,6,26)+'" stroke="#7a5230" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>'+
+      // dugattyú + szelep
+      '<rect x="'+cyl.x+'" y="'+pistY+'" width="'+cyl.w+'" height="12" fill="#5f7a78"/>'+
+      '<rect x="'+(cyl.x+cyl.w/2-9)+'" y="'+(pistY-3)+'" width="18" height="18" rx="3" fill="#0e7c6b"/>'+
+      '<rect x="'+(cyl.x+cyl.w/2-4)+'" y="'+pistY+'" width="8" height="12" fill="#cfe3f4"/>'+
+      // cseppek
+      '<g>'+[0,1,2].map((i)=>'<circle class="drop d'+(i+1)+'" cx="'+(cyl.x+cyl.w/2+(i-1)*7)+'" cy="'+(pistY-6)+'" r="3.2" fill="#1b6fae"/>').join('')+'</g>'+
+      // skála
+      '<line x1="'+(cyl.x+cyl.w+26)+'" y1="'+(cyl.top+30)+'" x2="'+(cyl.x+cyl.w+26)+'" y2="'+(cyl.top+30+sMax)+'" stroke="#9fb3ae" stroke-width="1.5"/>'+
+      '<line x1="'+(cyl.x+cyl.w+20)+'" y1="'+pistY+'" x2="'+(cyl.x+cyl.w+32)+'" y2="'+pistY+'" stroke="#c2521f" stroke-width="2"/>'+
+      '<text x="'+(cyl.x+cyl.w+38)+'" y="'+(pistY+4)+'" font-family="JetBrains Mono" font-size="11" fill="#64807d">s(t)</text>'+
+      '<text x="'+(cyl.x-16)+'" y="'+((wTop+wBot)/2)+'" font-family="Inter" font-size="12" fill="#1b6fae" text-anchor="end" transform="rotate(-90 '+(cyl.x-16)+' '+((wTop+wBot)/2)+')">víz (pórusvíz)</text>';
+    svg.classList.toggle('playing',playing&&U<0.995);
+
+    // tehermegoszlás sávok
+    const bw=280,bx=30;
+    bars.innerHTML=
+      '<text x="'+bx+'" y="28" font-family="Archivo" font-weight="700" font-size="14" fill="#0d272b">Ki viseli a terhet?</text>'+
+      '<rect x="'+bx+'" y="46" width="'+bw+'" height="34" rx="6" fill="#eee" stroke="#d3dedb"/>'+
+      '<rect x="'+bx+'" y="46" width="'+(bw*(1-U))+'" height="34" rx="6" fill="#c2521f"/>'+
+      '<rect x="'+(bx+bw*(1-U))+'" y="46" width="'+(bw*U)+'" height="34" fill="#7a5230"/>'+
+      '<text x="'+bx+'" y="100" font-family="JetBrains Mono" font-size="12" fill="#c2521f">Δu = '+u.toFixed(0)+' kPa</text>'+
+      '<text x="'+(bx+bw)+'" y="100" text-anchor="end" font-family="JetBrains Mono" font-size="12" fill="#7a5230">Δσ\u0027 = '+eff.toFixed(0)+' kPa</text>'+
+      '<rect x="'+bx+'" y="124" width="'+bw+'" height="10" rx="5" fill="#eee" stroke="#d3dedb"/>'+
+      '<rect x="'+bx+'" y="124" width="'+(bw*U)+'" height="10" rx="5" fill="#0e7c6b"/>'+
+      '<text x="'+bx+'" y="156" font-family="JetBrains Mono" font-size="12" fill="#0e7c6b">U = '+(100*U).toFixed(0)+'% — konszolidációs fok</text>'+
+      '<text x="'+bx+'" y="184" font-family="Inter" font-size="12" fill="#64807d">s(t) = U · s∞ — a süllyedés a konszolidációs fokkal arányos</text>';
+
+    $("roU").textContent="U = "+(100*U).toFixed(0)+"%";
+    $("roPore").textContent="Δu = "+u.toFixed(0)+" kPa";
+    $("roEff").textContent="Δσ' = "+eff.toFixed(0)+" kPa";
+  }
+  function step(ts){
+    if(!playing)return;
+    if(!last)last=ts;
+    const dt=(ts-last)/1000;last=ts;
+    Tv+=dt*0.12*(+$("valveSel").value);
+    if(Uavg(Tv)>0.995){playing=false;$("pistonPlay").textContent="▶ Indítás";}
+    draw();
+    if(playing)raf=requestAnimationFrame(step);
+  }
+  $("pistonPlay").addEventListener('click',()=>{
+    playing=!playing;last=0;
+    $("pistonPlay").textContent=playing?"❚❚ Szünet":"▶ Indítás";
+    if(playing)raf=requestAnimationFrame(step);
+  });
+  $("pistonReset").addEventListener('click',()=>{playing=false;Tv=0;last=0;$("pistonPlay").textContent="▶ Indítás";draw();});
+  $("loadSlider").addEventListener('input',()=>{$("loadVal").textContent=$("loadSlider").value+" kPa";draw();});
+  $("valveSel").addEventListener('change',draw);
+  draw();
+})();
+
+/* ════ 3. IZOKRÓNOK ════ */
+(function(){
+  const svg=$("isoSvg"),col=$("isoCol");if(!svg)return;
+  function tvFromSlider(v){return Math.pow(10,-2.3+v/100*2.5);} // 0.005 .. ~1.6
+  function poreColor(r){ // 0..1 → kék-fehér-narancs? inkább fehér→narancs
+    const c1=[255,250,245],c2=[194,82,31];
+    const c=c1.map((a,i)=>Math.round(a+(c2[i]-a)*r));
+    return 'rgb('+c.join(',')+')';
+  }
+  function draw(){
+    const Tv=tvFromSlider(+$("tvSlider").value);
+    const dbl=$("drainSel").value==="2";
+    $("tvVal").innerHTML="T<sub>v</sub> = "+Tv.toFixed(Tv<0.1?3:2).replace('.',',');
+    const px={x0:70,x1:350,y0:40,y1:300};
+    const W=px.x1-px.x0,H=px.y1-px.y0;
+    function uAt(zr){ // zr = z/H (0..1 a teljes rétegben)
+      return dbl?uRatio(zr*2,Tv):uRatio(zr,Tv);
+    }
+    // izokrón görbe pontok
+    let pts="",fill="M "+px.x0+" "+px.y0;
+    const N=80;
+    for(let i=0;i<=N;i++){
+      const zr=i/N,u=uAt(zr);
+      const x=px.x0+W*u,y=px.y0+H*zr;
+      pts+=(i?" L ":"M ")+x.toFixed(1)+" "+y.toFixed(1);
+      fill+=" L "+x.toFixed(1)+" "+y.toFixed(1);
+    }
+    fill+=" L "+px.x0+" "+px.y1+" Z";
+    // referencia izokrónok
+    function refPath(tv){let d="";for(let i=0;i<=N;i++){const zr=i/N;const u=dbl?uRatio(zr*2,tv):uRatio(zr,tv);d+=(i?" L ":"M ")+(px.x0+W*u).toFixed(1)+" "+(px.y0+H*zr).toFixed(1);}return d;}
+    const refs=[0.05,0.2,0.5].map(tv=>'<path d="'+refPath(tv)+'" stroke="#c8d6d2" stroke-width="1.4" fill="none" stroke-dasharray="4 4"/>').join('');
+    const topLbl=dbl?'drénezett (homok)':'drénezett (homok)';
+    const botLbl=dbl?'drénezett (homok)':'VÍZZÁRÓ réteg';
+    svg.innerHTML=
+      refs+
+      '<path d="'+fill+'" fill="rgba(194,82,31,0.13)"/>'+
+      '<path d="'+pts+'" stroke="#c2521f" stroke-width="3" fill="none" stroke-linecap="round"/>'+
+      '<line x1="'+px.x0+'" y1="'+px.y0+'" x2="'+px.x0+'" y2="'+px.y1+'" stroke="#0d272b" stroke-width="1.5"/>'+
+      '<line x1="'+px.x0+'" y1="'+px.y0+'" x2="'+px.x1+'" y2="'+px.y0+'" stroke="#0d272b" stroke-width="1.5"/>'+
+      '<text x="'+((px.x0+px.x1)/2)+'" y="24" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#64807d">Δu / Δu₀  (0 → 1)</text>'+
+      '<text x="'+(px.x1)+'" y="'+(px.y0-4)+'" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#9aa">1.0</text>'+
+      '<text x="24" y="'+((px.y0+px.y1)/2)+'" font-family="JetBrains Mono" font-size="12" fill="#64807d" text-anchor="middle" transform="rotate(-90 24 '+((px.y0+px.y1)/2)+')">mélység z</text>'+
+      '<text x="'+(px.x0+6)+'" y="'+(px.y0+14)+'" font-family="Inter" font-size="11" fill="#1b6fae">▲ '+topLbl+'</text>'+
+      '<text x="'+(px.x0+6)+'" y="'+(px.y1-8)+'" font-family="Inter" font-size="11" fill="'+(dbl?'#1b6fae':'#a32626')+'">▼ '+botLbl+'</text>'+
+      '<text x="'+(px.x1-4)+'" y="'+(px.y1-8)+'" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#c8a">szaggatott: Tv=0,05 · 0,2 · 0,5</text>';
+    // színes oszlop
+    let strips='';
+    const M=40;
+    for(let i=0;i<M;i++){
+      const zr=(i+0.5)/M,u=uAt(zr);
+      strips+='<rect x="60" y="'+(40+260*i/M)+'" width="80" height="'+(260/M+0.6)+'" fill="'+poreColor(u)+'"/>';
+    }
+    col.innerHTML=
+      '<rect x="40" y="14" width="120" height="20" fill="#d9c089"/><text x="100" y="28" text-anchor="middle" font-family="Inter" font-size="10.5" fill="#5b4a1f">homok (drén)</text>'+
+      strips+
+      '<rect x="60" y="40" width="80" height="260" fill="none" stroke="#0d272b" stroke-width="1.4"/>'+
+      (dbl?'<rect x="40" y="304" width="120" height="20" fill="#d9c089"/><text x="100" y="318" text-anchor="middle" font-family="Inter" font-size="10.5" fill="#5b4a1f">homok (drén)</text>'
+          :'<rect x="40" y="304" width="120" height="20" fill="#8c8c8c"/><text x="100" y="318" text-anchor="middle" font-family="Inter" font-size="10.5" fill="#fff">vízzáró</text>')+
+      '<text x="100" y="180" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#0d272b">Δu színskálán</text>';
+    const U=(function(){if(!dbl)return Uavg(Tv);return Uavg(Tv);})();
+    $("isoU").textContent="U = "+(100*U).toFixed(0)+"%";
+  }
+  $("tvSlider").addEventListener('input',draw);
+  $("drainSel").addEventListener('change',draw);
+  draw();
+})();
+
+/* ════ 4. e–log σ' ════ */
+(function(){
+  const svg=$("elogSvg");if(!svg)return;
+  const Cs=0.05,e_ref=1.10,s_ref=10; // szűz ág horgonypont: e=1.10 @ 10 kPa
+  const px={x0:60,x1:400,y0:24,y1:290};
+  const lgMin=Math.log10(10),lgMax=Math.log10(1000);
+  const X=s=>px.x0+(Math.log10(s)-lgMin)/(lgMax-lgMin)*(px.x1-px.x0);
+  const eMin=0.3,eMax=1.2;
+  const Y=e=>px.y1-(e-eMin)/(eMax-eMin)*(px.y1-px.y0);
+  function draw(){
+    const sig=+$("sigSlider").value, sp=+$("spSlider").value, Cc=+$("ccSlider").value;
+    $("sigVal").textContent=sig+" kPa";$("spVal").textContent=sp+" kPa";$("ccVal").textContent=Cc.toFixed(2);
+    const eNC=s=>e_ref-Cc*Math.log10(s/s_ref);
+    const ep=eNC(sp);
+    const eCur=(sig<=sp)?ep+Cs*Math.log10(sp/sig):eNC(sig);
+    const ocr=sp/sig;
+    // rács
+    let grid='';[10,30,100,300,1000].forEach(s=>{grid+='<line x1="'+X(s)+'" y1="'+px.y0+'" x2="'+X(s)+'" y2="'+px.y1+'" stroke="#e4ebe9"/>'+'<text x="'+X(s)+'" y="'+(px.y1+16)+'" text-anchor="middle" font-family="JetBrains Mono" font-size="10.5" fill="#64807d">'+s+'</text>';});
+    [0.4,0.6,0.8,1.0,1.2].forEach(e=>{grid+='<line x1="'+px.x0+'" y1="'+Y(e)+'" x2="'+px.x1+'" y2="'+Y(e)+'" stroke="#e4ebe9"/>'+'<text x="'+(px.x0-8)+'" y="'+(Y(e)+4)+'" text-anchor="end" font-family="JetBrains Mono" font-size="10.5" fill="#64807d">'+e.toFixed(1)+'</text>';});
+    // szűz ág
+    const v1=X(s_ref),v2=X(1000);
+    // OC ág: sp-től visszafelé
+    const sOC0=Math.max(10,sp/12);
+    svg.innerHTML=grid+
+      '<line x1="'+px.x0+'" y1="'+px.y1+'" x2="'+px.x1+'" y2="'+px.y1+'" stroke="#0d272b" stroke-width="1.4"/>'+
+      '<line x1="'+px.x0+'" y1="'+px.y0+'" x2="'+px.x0+'" y2="'+px.y1+'" stroke="#0d272b" stroke-width="1.4"/>'+
+      '<line x1="'+v1+'" y1="'+Y(eNC(s_ref))+'" x2="'+v2+'" y2="'+Y(eNC(1000))+'" stroke="#0e7c6b" stroke-width="3" stroke-linecap="round"/>'+
+      '<line x1="'+X(sOC0)+'" y1="'+Y(ep+Cs*Math.log10(sp/sOC0))+'" x2="'+X(sp)+'" y2="'+Y(ep)+'" stroke="#1b6fae" stroke-width="2.5" stroke-dasharray="6 4" stroke-linecap="round"/>'+
+      '<line x1="'+X(sp)+'" y1="'+px.y0+'" x2="'+X(sp)+'" y2="'+px.y1+'" stroke="#c2521f" stroke-width="1.6" stroke-dasharray="3 4"/>'+
+      '<text x="'+(X(sp)+5)+'" y="'+(px.y0+12)+'" font-family="JetBrains Mono" font-size="11" fill="#c2521f">σ\u0027p = '+sp+'</text>'+
+      '<text x="'+(v2-4)+'" y="'+(Y(eNC(1000))-8)+'" text-anchor="end" font-family="Inter" font-size="11" fill="#0e7c6b">szűz ág (Cc)</text>'+
+      '<text x="'+(X(sOC0)+4)+'" y="'+(Y(ep+Cs*Math.log10(sp/sOC0))-8)+'" font-family="Inter" font-size="11" fill="#1b6fae">újraterhelési ág (Cs)</text>'+
+      '<circle cx="'+X(sig)+'" cy="'+Y(eCur)+'" r="7" fill="'+(sig<sp?'#1b6fae':'#0e7c6b')+'" stroke="#fff" stroke-width="2.5"/>'+
+      '<text x="'+((px.x0+px.x1)/2)+'" y="'+(px.y1+32)+'" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#64807d">σ\u0027v [kPa] — log skála</text>'+
+      '<text x="20" y="'+((px.y0+px.y1)/2)+'" font-family="JetBrains Mono" font-size="11" fill="#64807d" text-anchor="middle" transform="rotate(-90 20 '+((px.y0+px.y1)/2)+')">hézagtényező e</text>';
+    $("ocrVal").textContent=ocr>=10?ocr.toFixed(0):ocr.toFixed(2).replace('.',',');
+    $("eVal").textContent="e = "+eCur.toFixed(2).replace('.',',');
+    $("ocrState").textContent=ocr>1.05?"Túlkonszolidált (OC) — merev ág":(ocr>0.95?"Normálisan konszolidált (NC)":"NC — a szűz ágon halad");
+  }
+  ["sigSlider","spSlider","ccSlider"].forEach(id=>$(id).addEventListener('input',draw));
+  draw();
+})();
+
+/* ════ 5. KALKULÁTOR ════ */
+(function(){
+  const svg=$("stSvg");if(!svg)return;
+  function draw(){
+    const H=+$("cH").value||6, dbl=$("cDrain").value==="2", cv=+$("cCv").value||2,
+          ds=+$("cDs").value||80, E=(+$("cE").value||4)*1000;
+    const Hdr=dbl?H/2:H;
+    const sInf=ds*H/E*100; // cm
+    const t50=0.197*Hdr*Hdr/cv, t90=0.848*Hdr*Hdr/cv;
+    const tEnd=TvFromU(0.98)*Hdr*Hdr/cv;
+    $("cS").textContent="s∞ = "+sInf.toFixed(1).replace('.',',')+" cm";
+    $("cT50").textContent="t₅₀ = "+fmtTime(t50);
+    $("cT90").textContent="t₉₀ = "+fmtTime(t90);
+    const px={x0:70,x1:610,y0:30,y1:270};
+    const X=t=>px.x0+t/tEnd*(px.x1-px.x0);
+    const Y=s=>px.y0+s/sInf*(px.y1-px.y0);
+    let path="";const N=120;
+    for(let i=0;i<=N;i++){
+      const t=tEnd*i/N,Tv=cv*t/(Hdr*Hdr),s=sInf*Uavg(Tv);
+      path+=(i?" L ":"M ")+X(t).toFixed(1)+" "+Y(s).toFixed(1);
+    }
+    let grid='';
+    const nt=5;
+    for(let i=0;i<=nt;i++){const t=tEnd*i/nt;grid+='<line x1="'+X(t)+'" y1="'+px.y0+'" x2="'+X(t)+'" y2="'+px.y1+'" stroke="#e4ebe9"/><text x="'+X(t)+'" y="'+(px.y1+18)+'" text-anchor="middle" font-family="JetBrains Mono" font-size="10.5" fill="#64807d">'+fmtTime(t)+'</text>';}
+    [0.25,0.5,0.75,1].forEach(r=>{grid+='<line x1="'+px.x0+'" y1="'+Y(sInf*r)+'" x2="'+px.x1+'" y2="'+Y(sInf*r)+'" stroke="#e4ebe9"/><text x="'+(px.x0-8)+'" y="'+(Y(sInf*r)+4)+'" text-anchor="end" font-family="JetBrains Mono" font-size="10.5" fill="#64807d">'+(sInf*r).toFixed(1).replace('.',',')+'</text>';});
+    svg.innerHTML=grid+
+      '<line x1="'+px.x0+'" y1="'+px.y0+'" x2="'+px.x0+'" y2="'+px.y1+'" stroke="#0d272b" stroke-width="1.4"/>'+
+      '<line x1="'+px.x0+'" y1="'+px.y1+'" x2="'+px.x1+'" y2="'+px.y1+'" stroke="#0d272b" stroke-width="1.4"/>'+
+      '<line x1="'+px.x0+'" y1="'+Y(sInf)+'" x2="'+px.x1+'" y2="'+Y(sInf)+'" stroke="#7a5230" stroke-width="1.5" stroke-dasharray="6 5"/>'+
+      '<text x="'+(px.x1-4)+'" y="'+(Y(sInf)-6)+'" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#7a5230">s∞ = '+sInf.toFixed(1).replace('.',',')+' cm</text>'+
+      '<path d="'+path+'" stroke="#0e7c6b" stroke-width="3" fill="none" stroke-linecap="round"/>'+
+      [[t50,0.5,'t₅₀','#1b6fae'],[t90,0.9,'t₉₀','#c2521f']].map(m=>'<line x1="'+X(m[0])+'" y1="'+Y(sInf*m[1])+'" x2="'+X(m[0])+'" y2="'+px.y1+'" stroke="'+m[3]+'" stroke-width="1.6" stroke-dasharray="3 4"/><circle cx="'+X(m[0])+'" cy="'+Y(sInf*m[1])+'" r="5" fill="'+m[3]+'"/><text x="'+(X(m[0])+6)+'" y="'+(Y(sInf*m[1])-8)+'" font-family="JetBrains Mono" font-size="11" fill="'+m[3]+'">'+m[2]+'</text>').join('')+
+      '<text x="'+((px.x0+px.x1)/2)+'" y="'+(px.y1+36)+'" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#64807d">idő t</text>'+
+      '<text x="20" y="'+((px.y0+px.y1)/2)+'" font-family="JetBrains Mono" font-size="11" fill="#64807d" text-anchor="middle" transform="rotate(-90 20 '+((px.y0+px.y1)/2)+')">süllyedés s [cm]</text>';
+  }
+  ["cH","cCv","cDs","cE"].forEach(id=>$(id).addEventListener('input',draw));
+  $("cDrain").addEventListener('change',draw);
+  draw();
+})();
+
+/* ════ 6. KÚSZÁS (statikus ábra) ════ */
+(function(){
+  const svg=$("creepSvg");if(!svg)return;
+  const px={x0:56,x1:400,y0:24,y1:230};
+  // log-idő: elsődleges S-görbe + lineáris kúszás
+  const lgA=-1,lgB=2.6,tp=1.3; // log10 t, elsődleges vége ~ logt=1.3
+  const X=lt=>px.x0+(lt-lgA)/(lgB-lgA)*(px.x1-px.x0);
+  function s(lt){
+    const Tv=Math.pow(10,lt)*0.197/ (Math.pow(10,0.0)); // skálázás: t50 ~ 1
+    const prim=46*Uavg(Tv*0.2);
+    const sec=lt>tp?(lt-tp)*14:0;
+    return 30+prim+sec;
+  }
+  let path="";const N=140;
+  for(let i=0;i<=N;i++){const lt=lgA+(lgB-lgA)*i/N;path+=(i?" L ":"M ")+X(lt).toFixed(1)+" "+s(lt).toFixed(1);}
+  svg.innerHTML=
+    '<line x1="'+px.x0+'" y1="'+px.y0+'" x2="'+px.x0+'" y2="'+px.y1+'" stroke="#0d272b" stroke-width="1.4"/>'+
+    '<line x1="'+px.x0+'" y1="'+px.y1+'" x2="'+px.x1+'" y2="'+px.y1+'" stroke="#0d272b" stroke-width="1.4"/>'+
+    '<rect x="'+px.x0+'" y="'+px.y0+'" width="'+(X(tp)-px.x0)+'" height="'+(px.y1-px.y0)+'" fill="rgba(194,82,31,0.07)"/>'+
+    '<rect x="'+X(tp)+'" y="'+px.y0+'" width="'+(px.x1-X(tp))+'" height="'+(px.y1-px.y0)+'" fill="rgba(122,82,48,0.08)"/>'+
+    '<path d="'+path+'" stroke="#0e7c6b" stroke-width="3" fill="none" stroke-linecap="round"/>'+
+    '<line x1="'+X(tp)+'" y1="'+px.y0+'" x2="'+X(tp)+'" y2="'+px.y1+'" stroke="#64807d" stroke-width="1.4" stroke-dasharray="4 4"/>'+
+    '<text x="'+((px.x0+X(tp))/2)+'" y="'+(px.y0+16)+'" text-anchor="middle" font-family="Inter" font-size="12" fill="#c2521f" font-weight="600">elsődleges (Δu &gt; 0)</text>'+
+    '<text x="'+((X(tp)+px.x1)/2)+'" y="'+(px.y0+16)+'" text-anchor="middle" font-family="Inter" font-size="12" fill="#7a5230" font-weight="600">másodlagos — Cα</text>'+
+    '<text x="'+((px.x0+px.x1)/2)+'" y="'+(px.y1+28)+'" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#64807d">log t</text>'+
+    '<text x="22" y="'+((px.y0+px.y1)/2)+'" font-family="JetBrains Mono" font-size="11" fill="#64807d" text-anchor="middle" transform="rotate(-90 22 '+((px.y0+px.y1)/2)+')">süllyedés s</text>';
+})();
+
+/* ════ 7. SZALAGDRÉN (statikus ábra) ════ */
+(function(){
+  const svg=$("drainSvg");if(!svg)return;
+  let drains='',arrows='';
+  for(let i=0;i<4;i++){
+    const x=80+i*88;
+    drains+='<rect x="'+(x-4)+'" y="70" width="8" height="180" rx="3" fill="#0e7c6b"/>';
+    if(i<4){
+      for(let j=0;j<3;j++){
+        const y=105+j*52;
+        arrows+='<path d="M '+(x+30)+' '+y+' L '+(x+10)+' '+y+'" stroke="#1b6fae" stroke-width="2.4" marker-end="url(#ah)"/>'+
+                '<path d="M '+(x-30)+' '+y+' L '+(x-10)+' '+y+'" stroke="#1b6fae" stroke-width="2.4" marker-end="url(#ah)"/>';
+      }
+    }
+  }
+  svg.innerHTML=
+    '<defs><marker id="ah" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 Z" fill="#1b6fae"/></marker></defs>'+
+    '<rect x="20" y="28" width="380" height="34" fill="#d9c089"/><text x="210" y="50" text-anchor="middle" font-family="Inter" font-size="12" fill="#5b4a1f">terhelő töltés + drénszőnyeg</text>'+
+    '<rect x="20" y="62" width="380" height="196" fill="#efe7dc"/>'+
+    '<rect x="20" y="62" width="380" height="196" fill="none" stroke="#d3dedb"/>'+
+    drains+arrows+
+    '<text x="210" y="282" text-anchor="middle" font-family="Inter" font-size="12" fill="#64807d">a víz vízszintesen, rövid úton áramlik a szalagdrénekhez</text>';
+})();
+
+/* ════ 8. KVÍZ ════ */
+(function(){
+  const Q=[
+    {q:"Mi a konszolidáció lényege?",o:["A talaj azonnali rugalmas összenyomódása","Telített talaj időben elhúzódó összenyomódása a pórusvíz kiáramlása miatt","A talaj térfogatnövekedése átnedvesedéskor","A szemcsék aprózódása terhelés alatt"],c:1,e:"A konszolidáció a pórusvíz lassú kiáramlásához kötött, időfüggő térfogatcsökkenés — ezért elsősorban kötött talajok jelensége."},
+    {q:"Terzaghi hatékony feszültségek elve szerint:",o:["σ' = σ + u","σ = σ' + u","u = σ + σ'","σ = σ' − u"],c:1,e:"σ = σ' + u: a teljes feszültség a szemcsevázon átadódó hatékony feszültség és a pórusvíznyomás összege."},
+    {q:"Hirtelen terheléskor a telített agyagban a teher-növekményt kezdetben mi viseli?",o:["A szemcseváz","Fele-fele arányban oszlik meg","Teljes egészében a pórusvíz (Δu = Δσ)","A kapilláris erők"],c:2,e:"A víz összenyomhatatlan, és nem tud azonnal eltávozni — így t = 0-ban Δu = Δσ, a talajváz még semmit sem érez."},
+    {q:"Miért gyors a konszolidáció homokban?",o:["Mert a homok szemcséi merevebbek","Mert a homok hézagtényezője kisebb","Mert nagy az áteresztőképessége, a víz gyorsan eltávozik","Mert a homokban nincs pórusvíz"],c:2,e:"A nagy áteresztőképesség (k) miatt a többlet-pórusvíznyomás gyakorlatilag a terheléssel egyidejűleg leépül."},
+    {q:"Az időtényező képlete:",o:["Tv = cv · t / Hdr²","Tv = Hdr² / (cv · t)","Tv = cv · Hdr² / t","Tv = t / (cv · Hdr)"],c:0,e:"Tv = cv·t/Hdr². Figyelem: Hdr a drénút, nem feltétlenül a rétegvastagság!"},
+    {q:"Kétoldali drénezés esetén a drénút (Hdr):",o:["A rétegvastagság kétszerese","A teljes rétegvastagság","A rétegvastagság fele","A rétegvastagság negyede"],c:2,e:"A víznek legfeljebb a réteg közepéig kell „felfelé vagy lefelé” utaznia: Hdr = H/2."},
+    {q:"Ha a drénút a felére csökken, a konszolidáció ideje:",o:["Felére csökken","Negyedére csökken","Nem változik","Kétszeresére nő"],c:1,e:"t ~ Hdr², tehát fél drénút → negyed idő. Ez a szalagdrének hatásosságának alapja."},
+    {q:"U = 50% átlagos konszolidációs fokhoz tartozó időtényező:",o:["Tv ≈ 0,05","Tv ≈ 0,197","Tv ≈ 0,5","Tv ≈ 0,848"],c:1,e:"Tv(50%) ≈ 0,197 és Tv(90%) ≈ 0,848 — a két leggyakrabban használt sarokszám."},
+    {q:"Mi jellemzi az ödométeres vizsgálatot?",o:["A minta szabadon deformálódhat oldalra","Az oldalirányú alakváltozás gátolt","A mintát csak nyírjuk","Száraz mintán végezzük"],c:1,e:"A merev gyűrű miatt csak függőleges alakváltozás lehetséges — ez felel meg a kiterjedt teher alatti rétegnek."},
+    {q:"A Cc kompressziós index:",o:["Az újraterhelési ág meredeksége","A szűz (normálkonszolidált) ág meredeksége az e–log σ' diagramban","A kúszási egyenes meredeksége","A konszolidáció sebességét írja le"],c:1,e:"Cc a szűz ág meredeksége; az újraterhelési ágé Cs, a kúszásé Cα, a sebességé pedig cv."},
+    {q:"Mit jelent az OCR > 1?",o:["A talaj normálisan konszolidált","A talaj túlkonszolidált — korábban nagyobb feszültséget viselt","A talaj alulkonszolidált","A talaj szervesanyag-tartalmú"],c:1,e:"OCR = σ'p/σ'v > 1: a talaj „emlékszik” egy korábbi nagyobb terhelésre (pl. lepusztult fedőréteg, egykori jégtakaró), ezért a lapos, merev ágon dolgozik."},
+    {q:"Mi az előterhelési (prekonszolidációs) feszültség, σ'p?",o:["A jelenlegi geosztatikus feszültség","A tervezett épület terhe","A legnagyobb hatékony feszültség, amit a talaj valaha viselt","A víznyomás maximuma"],c:2,e:"σ'p a talaj „feszültség-emlékezete”; ez választja el a merev (OC) és a lágy (NC) viselkedési tartományt."},
+    {q:"A másodlagos konszolidáció (kúszás):",o:["A pórusvíznyomás leépülése alatt zajlik","Állandó hatékony feszültség mellett zajló további összenyomódás","Csak homokban fordul elő","A duzzadás másik neve"],c:1,e:"Az elsődleges szakasz végén Δu ≈ 0, mégis folytatódik a süllyedés a szemcseváz lassú átrendeződése (kúszás) miatt — főleg szerves talajoknál jelentős."},
+    {q:"A szalagdrének elsődleges célja:",o:["A talaj megerősítése szálakkal","A drénút lerövidítése, így a konszolidáció gyorsítása","A talajvízszint tartós süllyesztése","A süllyedés teljes megakadályozása"],c:1,e:"A drének nem csökkentik a végsüllyedést — csak azt érik el, hogy hamarabb következzen be, mert a víz rövid, vízszintes úton távozhat."},
+    {q:"Mit ábrázol egy izokrón?",o:["A süllyedés időbeli alakulását","A többlet-pórusvíznyomás mélység menti eloszlását egy adott időpontban","A talajvízszint éves ingadozását","A hézagtényező változását a feszültséggel"],c:1,e:"Izokrón = „azonos idejű” görbe: pillanatfelvétel arról, hol mennyi Δu maradt a rétegben."},
+    {q:"A konszolidációs együttható (cv) szokásos mértékegysége:",o:["kPa","m/s","m²/év (vagy m²/s)","kN/m³"],c:2,e:"cv terület/idő dimenziójú: m²/év vagy m²/s. Ez köti össze a valós időt a dimenziótlan Tv időtényezővel."}
+  ];
+  let order=[],idx=0,score=0;
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+  function start(){
+    order=shuffle([...Q.keys()]);idx=0;score=0;
+    $("quizResult").classList.remove('show');$("quizMain").style.display='block';
+    show();
+  }
+  function show(){
+    const q=Q[order[idx]];
+    $("qCount").textContent=(idx+1)+" / "+Q.length;
+    $("qScoreLive").textContent="Pont: "+score;
+    $("qProg").style.width=(idx/Q.length*100)+"%";
+    $("qText").textContent=q.q;
+    $("qExpl").classList.remove('show');
+    $("qNext").classList.remove('show');
+    const opts=shuffle(q.o.map((t,i)=>({t,ok:i===q.c})));
+    $("qOpts").innerHTML="";
+    opts.forEach(o=>{
+      const b=document.createElement('button');
+      b.className='quiz-opt';b.textContent=o.t;
+      b.addEventListener('click',()=>{
+        [...$("qOpts").children].forEach(x=>{x.disabled=true;});
+        if(o.ok){b.classList.add('correct');score++;}
+        else{b.classList.add('wrong');[...$("qOpts").children].find(x=>x.dataset.ok==="1").classList.add('correct');}
+        $("qScoreLive").textContent="Pont: "+score;
+        $("qExpl").innerHTML="<b>Magyarázat:</b> "+q.e;
+        $("qExpl").classList.add('show');
+        $("qNext").classList.add('show');
+        $("qNext").textContent=idx<Q.length-1?"Következő →":"Eredmény →";
+      });
+      b.dataset.ok=o.ok?"1":"0";
+      $("qOpts").appendChild(b);
+    });
+  }
+  $("qNext").addEventListener('click',()=>{
+    idx++;
+    if(idx<Q.length){show();}
+    else{
+      $("quizMain").style.display='none';
+      $("quizResult").classList.add('show');
+      $("qFinal").textContent=score+" / "+Q.length;
+      const r=score/Q.length;
+      $("qMsg").textContent=r>=0.9?"Kiváló! A konszolidáció elmélete a kisujjadban van — jöhet a rézsűállékonyság.":
+        r>=0.7?"Szép munka! Egy-két részlet még csiszolható — nézd át az izokrónokat és a Tv–U táblázatot.":
+        r>=0.5?"Jó alap, de érdemes újra végigjátszani a rugó–dugattyú modellt és az e–log σ' diagramot.":
+        "Ne csüggedj — görgess vissza az alapfogalmakhoz, és próbáld újra! A modellek segítenek.";
+    }
+  });
+  $("qRestart").addEventListener('click',start);
+  start();
+})();
+})();
+</script>
+</body>
+</html>
