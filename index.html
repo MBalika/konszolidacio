@@ -646,7 +646,7 @@ function fmtTime(years){
       '<rect x="60" y="40" width="80" height="260" fill="none" stroke="#0d272b" stroke-width="1.4"/>'+
       (dbl?'<rect x="40" y="304" width="120" height="20" fill="#d9c089"/><text x="100" y="318" text-anchor="middle" font-family="Inter" font-size="10.5" fill="#5b4a1f">drénezett</text>'
           :'<rect x="40" y="304" width="120" height="20" fill="#8c8c8c"/><text x="100" y="318" text-anchor="middle" font-family="Inter" font-size="10.5" fill="#fff">vízzáró</text>')+
-      '<text x="100" y="180" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#0d272b">Δu színskálán</text>';
+      '<text x="100" y="180" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#0d272b">Δu színskálán</text>';
     const U=(function(){if(!dbl)return Uavg(Tv);return Uavg(Tv);})();
     $("isoU").textContent="U = "+(100*U).toFixed(0)+"%";
   }
