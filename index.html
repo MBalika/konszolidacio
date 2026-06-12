@@ -637,7 +637,7 @@ function fmtTime(years){
       '<text x="24" y="'+((px.y0+px.y1)/2)+'" font-family="JetBrains Mono" font-size="12" fill="#64807d" text-anchor="middle" transform="rotate(-90 24 '+((px.y0+px.y1)/2)+')">mélység z</text>'+
       '<text x="'+(px.x0+6)+'" y="'+(px.y0+14)+'" font-family="Inter" font-size="11" fill="#1b6fae">▲ '+topLbl+'</text>'+
       '<text x="'+(px.x0+6)+'" y="'+(px.y1-8)+'" font-family="Inter" font-size="11" fill="'+(dbl?'#1b6fae':'#a32626')+'">▼ '+botLbl+'</text>'+
-      '<text x="'+(px.x1-4)+'" y="'+(px.y1-8)+'" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#c8a">szaggatott: Tv=0,05 · 0,2 · 0,5</text>';
+      '<text x="'+((px.x0+px.x1)/2)+'" y="'+(px.y1+26)+'" text-anchor="middle" font-family="JetBrains Mono" font-size="10.5" fill="#a98bb0">szaggatott vonal: Tv = 0,05 · 0,2 · 0,5</text>';
     // színes oszlop
     let strips='';
     const M=40;
